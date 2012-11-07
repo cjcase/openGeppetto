@@ -1,0 +1,71 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package openGeppetto;
+
+import javax.swing.JFrame;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+/**
+ *
+ * @author cj
+ */
+public class HandTrackerNUI implements Runnable{
+    public HandTracker viewer;
+	private boolean shouldRun = true;
+	private JFrame frame;
+    
+    
+    public HandTrackerNUI (){
+    	
+        frame = new JFrame("OpenNI Hand Tracker");
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {}
+        });
+        
+        viewer = new HandTracker();
+        frame.add("Center", viewer);
+                        
+    	frame.addKeyListener(new KeyListener() {
+            @Override
+			public void keyTyped(KeyEvent arg0){}
+            @Override
+			public void keyReleased(KeyEvent arg0){}
+            @Override
+			public void keyPressed(KeyEvent arg0){
+				if (arg0.getKeyCode() == KeyEvent.VK_ESCAPE){
+					shouldRun = false;
+				}
+			}
+		});
+        
+        frame.pack();
+        frame.setVisible(true);
+    }
+
+    public void buildNUI(){
+        if (viewer == null)
+        {
+            viewer = new HandTracker();
+        }
+        viewer.updateDepth();
+        viewer.repaint();
+    }
+
+    @Override
+    public void run() {
+        frame.pack();
+        frame.setVisible(true);
+        
+        while(shouldRun) {
+            viewer.updateDepth();
+            viewer.repaint();
+        }
+        frame.dispose();
+    }
+}
