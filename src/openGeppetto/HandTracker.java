@@ -16,9 +16,11 @@ import java.util.HashMap;
 import java.awt.*;
 import java.awt.image.*;
 
-class HandTracker extends Component
-{
+class HandTracker extends Component {
+    
+    public controlAdaptor bot;
 
+    //Callback class for "Gesture Recognized" event
 	class MyGestureRecognized implements IObserver<GestureRecognizedEventArgs>
 	{
 
@@ -30,7 +32,7 @@ class HandTracker extends Component
 			{
 				handsGen.StartTracking(args.getEndPosition());
 				//gestureGen.removeGesture("Click");
-                                System.out.println(args.getGesture());
+                System.out.println("Recognized: " + args.getGesture());
 			} catch (StatusException e)
 			{
 				e.printStackTrace();
@@ -45,7 +47,7 @@ class HandTracker extends Component
 			ArrayList<Point3D> newList = new ArrayList<Point3D>();
 			newList.add(args.getPosition());
 			history.put(new Integer(args.getId()), newList);
-                        System.out.println("New Hand Detected! (Id: " + args.getId() + ")");
+            System.out.println("New Hand Detected! (Id: " + args.getId() + ")");
 		}
 	}
 	class MyHandUpdateEvent implements IObserver<ActiveHandEventArgs>
@@ -55,8 +57,29 @@ class HandTracker extends Component
 		{
 			ArrayList<Point3D> historyList = history.get(args.getId());
 			
-			historyList.add(args.getPosition());
-			                        
+            historyList.add(args.getPosition());
+            //System.out.println("[" + args.getPosition().getX() + ", " + args.getPosition().getY() + "]");
+            
+            //HeadControl TEST
+            if(bot.isConnected()){
+                
+                float kinectX = args.getPosition().getX();
+                float kinectY = args.getPosition().getY();
+                kinectX = (kinectX * 10000)/(width / 2);
+                kinectY = (kinectY * 10000)/(width / 2);
+                if(kinectX > 10000) kinectX = 10000;
+                if(kinectX < -10000) kinectX = -10000;
+                if(kinectY > 10000) kinectY = 10000;
+                if(kinectY < -10000) kinectY = -10000;
+                kinectX /= 10000;
+                kinectY /= 10000;
+                
+                bot.panHead(kinectX);
+                bot.nodHead(kinectY);
+                
+                System.out.println("X: " + kinectX + "Y: "+ kinectY);
+            }
+            
 			while (historyList.size() > historySize)
 			{
 				historyList.remove(0);
@@ -71,7 +94,8 @@ class HandTracker extends Component
 				InactiveHandEventArgs args)
 		{
 			history.remove(args.getId());
-			if (history.isEmpty())
+            System.out.println("Hand Lost! (Id: " + args.getId() + ")");
+			/*if (history.isEmpty())
 			{
 				try
 				{
@@ -80,7 +104,7 @@ class HandTracker extends Component
 				{
 					e.printStackTrace();
 				}
-			}
+			}*/
 		}
 	}
 	
@@ -88,7 +112,7 @@ class HandTracker extends Component
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private OutArg<ScriptNode> scriptNode;
+	//private OutArg<ScriptNode> scriptNode;
     private Context context;
     private DepthGenerator depthGen;
     private GestureGenerator gestureGen;
@@ -100,15 +124,18 @@ class HandTracker extends Component
     private BufferedImage bimg;
     int width, height;
     
-    private final String SAMPLE_XML_FILE = "/home/cj/Desktop/Thesis/openGeppetto/src/openGeppetto/config.xml";
+    //private final String SAMPLE_XML_FILE = "config.xml";
     public HandTracker()
     {
 
         try {
-            scriptNode = new OutArg<ScriptNode>();
-            context = Context.createFromXmlFile(SAMPLE_XML_FILE, scriptNode);
-
+            //scriptNode = new OutArg<ScriptNode>();
+            //context = Context.createFromXmlFile(SAMPLE_XML_FILE, scriptNode);
+            context = new Context();
+            context.setGlobalMirror(true);
+            
             gestureGen = GestureGenerator.create(context);
+
             gestureGen.addGesture("Click");
             gestureGen.addGesture("Wave");
             gestureGen.getGestureRecognizedEvent().addObserver(new MyGestureRecognized());
@@ -129,6 +156,8 @@ class HandTracker extends Component
             width = depthMD.getFullXRes();
             height = depthMD.getFullYRes();
             
+            System.out.println("Resolution: "+width+"x"+height);
+            
             imgbytes = new byte[width*height];
             
             DataBufferByte dataBuffer = new DataBufferByte(imgbytes, width*height);
@@ -136,14 +165,16 @@ class HandTracker extends Component
             bimg = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
             bimg.setData(raster);
 
+        } catch (StatusException e){
+            System.out.println("Xbox Kinect not found! >> " + e.getMessage());
+            System.exit(1);
         } catch (GeneralException e) {
-            e.printStackTrace();
+            System.out.println("Error! >> " + e.getMessage());
             System.exit(1);
         }
     }
     
-    private void calcHist(ShortBuffer depth)
-    {
+    private void calcHist(ShortBuffer depth){
         // reset
         for (int i = 0; i < histogram.length; ++i)
             histogram[i] = 0;
@@ -203,34 +234,37 @@ class HandTracker extends Component
         return new Dimension(width, height);
     }
 
-    Color colors[] = {Color.RED, Color.BLUE, Color.CYAN, Color.GREEN, Color.MAGENTA, Color.PINK, Color.YELLOW};
+    Color colors[] = {Color.RED, Color.RED, Color.BLUE, Color.GREEN, Color.MAGENTA, Color.PINK, Color.YELLOW};
     public void paint(Graphics g) {
         DataBufferByte dataBuffer = new DataBufferByte(imgbytes, width*height);
         Raster raster = Raster.createPackedRaster(dataBuffer, width, height, 8, null);
         bimg.setData(raster);
 
         g.drawImage(bimg, 0, 0, null);
+        
+        g.setColor(Color.RED);
+        //g.drawLine(width / 2, height, width / 2, height * -1);
 
         for (Integer id : history.keySet())
         {
         	try
         	{
         	ArrayList<Point3D> points = history.get(id);
-        	g.setColor(colors[id%colors.length]);
+        	g.setColor(colors[id % colors.length]);
         	int[] xPoints = new int[points.size()];
         	int[] yPoints = new int[points.size()];
         	for (int i = 0; i < points.size(); ++i)
         	{
         		Point3D proj = depthGen.convertRealWorldToProjective(points.get(i));
-        		xPoints[i] = (int)proj.getX();
-        		yPoints[i] = (int)proj.getY();
+        		xPoints[i] = (int) proj.getX();
+        		yPoints[i] = (int) proj.getY();
         	}
             g.drawPolyline(xPoints, yPoints, points.size());
     		Point3D proj = depthGen.convertRealWorldToProjective(points.get(points.size()-1));
             g.drawArc((int)proj.getX(), (int)proj.getY(), 5, 5, 0, 360);
-        	} catch (StatusException e)
+        	} catch (Exception e)
         	{
-        		e.printStackTrace();
+        		System.out.println(e);
         	}
         }
         

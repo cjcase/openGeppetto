@@ -22,6 +22,7 @@ public abstract class TCPListener extends Listener{
     
     protected abstract void connected(Socket socket);
 
+    @Override
 	protected void runServer() {
 		Thread me = Thread.currentThread();
 		try { _serverSocket=new ServerSocket(_port); }
@@ -38,6 +39,7 @@ public abstract class TCPListener extends Listener{
 		}
 	}
 
+    @Override
 	protected void runConnect() {
 		int attempts=0;
 		Thread me = Thread.currentThread();
@@ -67,6 +69,7 @@ public abstract class TCPListener extends Listener{
 		}
 	}
 
+    @Override
 	public void close() {
 		_listenerThread=null;
 		_isConnected=false;

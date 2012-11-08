@@ -16,6 +16,7 @@ import java.awt.event.WindowEvent;
  */
 public class HandTrackerNUI implements Runnable{
     public HandTracker viewer;
+    public controlAdaptor bot;
 	private boolean shouldRun = true;
 	private JFrame frame;
     
@@ -59,6 +60,8 @@ public class HandTrackerNUI implements Runnable{
 
     @Override
     public void run() {
+        viewer.bot = this.bot;
+        
         frame.pack();
         frame.setVisible(true);
         
