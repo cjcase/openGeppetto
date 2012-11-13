@@ -1,34 +1,29 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package openGeppetto;
+package AIBO;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
+import openGeppetto.TCPListener;
+import openGeppetto.Listener;
 
-/**
- *
- * @author cj
- */
-public class controlAIBO extends TCPListener{
+//Code by cjcase
+public class controlAIBO extends TCPListener implements Listener.ConnectionListener{
     
+    //Global Variables
     Socket sock;
     InputStream socketIn;
     PrintStream socketOut;
     
-    //Aibo Head variables
-    private int centralPort = 10020;
-    double pan = 0.0;
-	double roll = 0.0;
-    
     //Constructors
-    public controlAIBO() { super(); }
-    public controlAIBO(String host) { 
+    public controlAIBO() { 
+        super();
+    }
+    public controlAIBO(String host) {
         super(host, 10020); //Tekkotsu default control port
     } 
-    public controlAIBO(String host, int port) { super(host, port); }
+    public controlAIBO(String host, int port) { 
+        super(host, port); 
+    }
     
     private void startHead(){
         socketOut.println("!root \"TekkotsuMon\" \"HeadController\"");
@@ -65,11 +60,18 @@ public class controlAIBO extends TCPListener{
 
 		try { socket.close(); } catch (Exception e) { System.out.println("Connection Error! >> " + e.getMessage()); }
 		_isConnected=false;
-		        
-		//The sleep is to get around the socket still listening after being closed
-		//if(!destroy)
-			//System.out.println("HeadPoint - connection closed... reconnect after 5 seconds");
+		      
 		try { Thread.sleep(5000); } catch (Exception e) {}
   }
+
+    @Override
+    public void onConnected() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void onDisconnected() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
     
 }

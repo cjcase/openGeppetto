@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package openGeppetto;
 
 import javax.swing.JFrame;
@@ -10,10 +6,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-/**
- *
- * @author cj
- */
+//Code by cjcase based on OpenNI examples
 public class HandTrackerNUI implements Runnable{
     public HandTracker viewer;
     public controlAdaptor bot;
@@ -23,7 +16,7 @@ public class HandTrackerNUI implements Runnable{
     
     public HandTrackerNUI (){
     	
-        frame = new JFrame("OpenNI Hand Tracker");
+        frame = new JFrame("openGeppetto Hand Tracking NUI");
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {}

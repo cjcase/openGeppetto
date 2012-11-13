@@ -1,13 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package openGeppetto;
 
-/**
- *
- * @author cj
- */
 import org.OpenNI.*;
 
 import java.nio.ShortBuffer;
@@ -16,6 +8,7 @@ import java.util.HashMap;
 import java.awt.*;
 import java.awt.image.*;
 
+//Code by cjcase based on OpenNI examples
 class HandTracker extends Component {
     
     public controlAdaptor bot;
@@ -77,7 +70,7 @@ class HandTracker extends Component {
                 bot.panHead(kinectX);
                 bot.nodHead(kinectY);
                 
-                System.out.println("X: " + kinectX + "Y: "+ kinectY);
+                //System.out.println("X: " + kinectX + "Y: "+ kinectY);
             }
             
 			while (historyList.size() > historySize)

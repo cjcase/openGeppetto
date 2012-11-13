@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package openGeppetto;
 
 import java.io.InputStream;
@@ -12,10 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.ByteArrayOutputStream;
 
-/**
- *
- * @author cj
- */
+// Original code by Tekkotsu Developers
 public abstract class Listener implements Runnable{
    public Listener() { _port=-1; _isConnected=false; }
 	public Listener(int port) { this(); setPort(port); }

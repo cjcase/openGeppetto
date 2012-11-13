@@ -1,24 +1,26 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package openGeppetto;
 
-/**
- *
- * @author cj
- */
+//Code by cjcase
+
+import AIBO.*;
+
 public class controlAdaptor {
     
     //Constants
     public static final byte DEFAULT = 0;  
     public static final byte AIBO = 1; //Using robot "index" to allow method overload and general robot interoperability 
+    private final int aiboMainPort = 10020;
+    private final int aiboHeadPort = 10052;
+    private final int aiboStopPort = 10053;
     
     //Global Vars
     private byte currentBot;
     private controlAIBO aiboMain;
     private headAIBO aiboHead;
-    
+    private stopAIBO aiboStop;
+    public Listener.ConnectionListener connObs;
+            
     //Constructors
     public controlAdaptor(){
         currentBot = this.DEFAULT;
@@ -32,10 +34,13 @@ public class controlAdaptor {
     public controlAdaptor(byte bot, String host){ 
         currentBot = bot;
         if(currentBot == this.AIBO){
-            aiboMain = new controlAIBO(host);
-            aiboMain.needConnection();
+            aiboMain = new controlAIBO(host, aiboMainPort);
+            aiboMain.addConnectionListener(connObs);
             
-            aiboHead = new headAIBO(host);
+            aiboStop = new stopAIBO(host, aiboStopPort);
+            aiboStop.needConnection();
+            
+            aiboHead = new headAIBO(host, aiboHeadPort);
             aiboHead.needConnection();
         }
     }
@@ -49,6 +54,28 @@ public class controlAdaptor {
                aiboHead.sendCommand("r", param);   
     }
     
+    public void toggleStop(){
+        aiboStop.toggle();
+    }
+    
+    public float getPan(){
+        if(currentBot == this.AIBO)
+            return (float)aiboHead.pan;
+        return 0.0f;
+    }
+    
+    public float getNod(){
+        if(currentBot == this.AIBO)
+            return (float)aiboHead.nod;
+        return 0.0f;
+    }
+    
+    public boolean getStopped(){
+        if(currentBot == this.AIBO)
+            return aiboStop.stopped;
+        return true;
+    }
+     
     public boolean isConnected(){
         return aiboHead._isConnected;
     }

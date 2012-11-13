@@ -1,16 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package openGeppetto;
 
 import java.net.ServerSocket;
 import java.net.Socket;
 
-/**
- *
- * @author cj
- */
+//Original code by Tekkotsu developers
 public abstract class TCPListener extends Listener{
     
     public TCPListener() { super(); }

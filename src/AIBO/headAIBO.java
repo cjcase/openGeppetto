@@ -1,34 +1,32 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package openGeppetto;
+package AIBO;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
+import openGeppetto.TCPListener;
 
-/**
- *
- * @author cj
- */
+//Code by cjcase
 public class headAIBO extends TCPListener{
     
+    //Global Variables
     Socket sock;
     InputStream socketIn;
     OutputStream socketOut;
     
-    //Aibo Head variables
-    private int headPort = 10052;
-    double pan = 0.0;
-	double nod = 0.0;
+    //Head positions
+    public static double pan = 0.0;
+	public static double nod = 0.0;
     
     //Constructors
-    public headAIBO() { super(); }
+    public headAIBO() { 
+        super();
+    }
     public headAIBO(String host) { 
         super(host, 10052); //Tekkotsu default head control port
     } 
-    public headAIBO(String host, int port) { super(host, port); }
+    public headAIBO(String host, int port) { 
+        super(host, port);
+    }
     
     public void sendCommand(String command, double param) {
 		
