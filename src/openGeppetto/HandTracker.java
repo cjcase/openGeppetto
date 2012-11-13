@@ -11,7 +11,7 @@ import java.awt.image.*;
 //Code by cjcase based on OpenNI examples
 class HandTracker extends Component {
     
-    public controlAdaptor bot;
+    public controlAdapter bot;
 
     //Callback class for "Gesture Recognized" event
 	class MyGestureRecognized implements IObserver<GestureRecognizedEventArgs>
@@ -67,8 +67,12 @@ class HandTracker extends Component {
                 kinectX /= 10000;
                 kinectY /= 10000;
                 
-                bot.panHead(kinectX);
-                bot.nodHead(kinectY);
+                //bot.panHead(kinectX);
+                //bot.nodHead(kinectY);
+                
+                bot.rotate(kinectX);
+                bot.goFwd(kinectY);
+                
                 
                 //System.out.println("X: " + kinectX + "Y: "+ kinectY);
             }
@@ -230,7 +234,7 @@ class HandTracker extends Component {
     Color colors[] = {Color.RED, Color.RED, Color.BLUE, Color.GREEN, Color.MAGENTA, Color.PINK, Color.YELLOW};
     public void paint(Graphics g) {
         DataBufferByte dataBuffer = new DataBufferByte(imgbytes, width*height);
-        Raster raster = Raster.createPackedRaster(dataBuffer, width, height, 8, null);
+        Raster raster = Raster.createPackedRaster(dataBuffer, width, height, 8, null); //TODO Test de tamaño de ventana!
         bimg.setData(raster);
 
         g.drawImage(bimg, 0, 0, null);

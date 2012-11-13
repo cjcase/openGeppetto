@@ -88,8 +88,8 @@ public class headAIBO extends TCPListener{
 		_isConnected=false;
 		        
 		//The sleep is to get around the socket still listening after being closed
-		//if(!destroy)
-			//System.out.println("HeadPoint - connection closed... reconnect after 5 seconds");
+		if(!destroy)
+			System.out.println("AIBO Head Control :: connection closed... reconnecting");
 		try { Thread.sleep(5000); } catch (Exception e) {}
   }
     

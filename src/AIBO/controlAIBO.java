@@ -25,8 +25,16 @@ public class controlAIBO extends TCPListener implements Listener.ConnectionListe
         super(host, port); 
     }
     
-    private void startHead(){
+    public void startHead(){
         socketOut.println("!root \"TekkotsuMon\" \"HeadController\"");
+    }
+    
+    public void startWalk(){
+        socketOut.println("!root \"TekkotsuMon\" \"WalkController\"");
+    }
+    
+    public void startRaw(){
+        socketOut.println("!root \"TekkotsuMon\" \"RawCam\"");
     }
     
     @Override
@@ -45,7 +53,6 @@ public class controlAIBO extends TCPListener implements Listener.ConnectionListe
             socketOut.println("!hello");
             socketOut.println("!dump_stack");
             socketOut.println("!refresh");
-            this.startHead();
 			while (true) { //block until the socket is closed
 				readLine(socketIn);
 				if(!_isConnected) break;

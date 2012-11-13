@@ -9,7 +9,7 @@ import java.awt.event.WindowEvent;
 //Code by cjcase based on OpenNI examples
 public class HandTrackerNUI implements Runnable{
     public HandTracker viewer;
-    public controlAdaptor bot;
+    public controlAdapter bot;
 	private boolean shouldRun = true;
 	private JFrame frame;
     
