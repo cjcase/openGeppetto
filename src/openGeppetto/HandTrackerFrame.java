@@ -7,19 +7,21 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 //Code by cjcase based on OpenNI examples
-public class HandTrackerNUI implements Runnable{
+public class HandTrackerFrame implements Runnable{
     public HandTracker viewer;
     public controlAdapter bot;
 	private boolean shouldRun = true;
 	private JFrame frame;
     
     
-    public HandTrackerNUI (){
+    public HandTrackerFrame (){
     	
         frame = new JFrame("openGeppetto Hand Tracking NUI");
         frame.addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosing(WindowEvent e) {}
+            public void windowClosing(WindowEvent e) {
+                frame.dispose();
+            }
         });
         
         viewer = new HandTracker();
@@ -56,6 +58,7 @@ public class HandTrackerNUI implements Runnable{
         viewer.bot = this.bot;
         
         frame.pack();
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         
         while(shouldRun) {

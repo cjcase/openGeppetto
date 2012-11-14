@@ -9,9 +9,16 @@ import java.awt.*;
 import java.awt.image.*;
 
 //Code by cjcase based on OpenNI examples
-class HandTracker extends Component {
+public class HandTracker extends Component {
     
     public controlAdapter bot;
+    
+    //TODO test
+    String[] gestures;
+    float kinectX = 0f;
+    float kinectY = 0f;
+    float kinectZ = 0f;
+    float initZ = 0f;
 
     //Callback class for "Gesture Recognized" event
 	class MyGestureRecognized implements IObserver<GestureRecognizedEventArgs>
@@ -24,16 +31,23 @@ class HandTracker extends Component {
 			try
 			{
 				handsGen.StartTracking(args.getEndPosition());
-				//gestureGen.removeGesture("Click");
-                System.out.println("Recognized: " + args.getGesture());
+				System.out.println("Recognized: " + args.getGesture());
+                if(args.getGesture().equals("Wave")){
+                   initZ = args.getIdPosition().getZ();
+                   System.out.println("init Z: " + initZ);
+                } else if(args.getGesture().equals("Click")){
+                    bot.toggleStop();
+                }
+                
 			} catch (StatusException e)
 			{
-				e.printStackTrace();
+				System.out.println("Gesture Recognition Error: "+e);
 			}
 		}
 	}
 	class MyHandCreateEvent implements IObserver<ActiveHandEventArgs>
 	{
+        @Override
 		public void update(IObservable<ActiveHandEventArgs> observable,
 				ActiveHandEventArgs args)
 		{
@@ -41,10 +55,12 @@ class HandTracker extends Component {
 			newList.add(args.getPosition());
 			history.put(new Integer(args.getId()), newList);
             System.out.println("New Hand Detected! (Id: " + args.getId() + ")");
+            initZ = args.getPosition().getZ();
 		}
 	}
 	class MyHandUpdateEvent implements IObserver<ActiveHandEventArgs>
 	{
+        @Override
 		public void update(IObservable<ActiveHandEventArgs> observable,
 				ActiveHandEventArgs args)
 		{
@@ -56,25 +72,34 @@ class HandTracker extends Component {
             //HeadControl TEST
             if(bot.isConnected()){
                 
-                float kinectX = args.getPosition().getX();
-                float kinectY = args.getPosition().getY();
+                kinectX = args.getPosition().getX();
+                kinectY = args.getPosition().getY();
+                kinectZ = args.getPosition().getZ();
+                
+                //System.out.println("Z: " + (int)kinectZ);
+                
                 kinectX = (kinectX * 10000)/(width / 2);
                 kinectY = (kinectY * 10000)/(width / 2);
+                kinectZ = (kinectZ * 10000)/(initZ + 10000);
+                
                 if(kinectX > 10000) kinectX = 10000;
                 if(kinectX < -10000) kinectX = -10000;
                 if(kinectY > 10000) kinectY = 10000;
                 if(kinectY < -10000) kinectY = -10000;
+                if(kinectZ > 10000) kinectZ = 10000;
+                if(kinectZ < -10000) kinectZ = -10000;
+                
                 kinectX /= 10000;
                 kinectY /= 10000;
+                kinectZ /= 10000;
                 
-                //bot.panHead(kinectX);
-                //bot.nodHead(kinectY);
+                bot.panHead(kinectX * -1);
+                bot.nodHead(kinectY);
                 
-                bot.rotate(kinectX);
-                bot.goFwd(kinectY);
-                
-                
-                //System.out.println("X: " + kinectX + "Y: "+ kinectY);
+                //bot.rotate(kinectX);
+                //bot.goFwd(kinectY);
+                               
+                //System.out.println("Z: " + kinectZ);
             }
             
 			while (historyList.size() > historySize)
@@ -87,6 +112,7 @@ class HandTracker extends Component {
 	private int historySize = 10;
 	class MyHandDestroyEvent implements IObserver<InactiveHandEventArgs>
 	{
+        @Override
 		public void update(IObservable<InactiveHandEventArgs> observable,
 				InactiveHandEventArgs args)
 		{
@@ -132,6 +158,17 @@ class HandTracker extends Component {
             context.setGlobalMirror(true);
             
             gestureGen = GestureGenerator.create(context);
+            
+            //TODO gestures test
+            gestures = gestureGen.enumerateAllGestures();
+            System.out.print("Available Gestures: ");
+            for(int i = 0; i < gestures.length; i++){
+                if(i+1 == gestures.length){
+                    System.out.println(gestures[i]);
+                } else {
+                    System.out.print(gestures[i] + ", ");
+                }                
+            }
 
             gestureGen.addGesture("Click");
             gestureGen.addGesture("Wave");
@@ -143,7 +180,7 @@ class HandTracker extends Component {
             handsGen.getHandDestroyEvent().addObserver(new MyHandDestroyEvent());
             
             depthGen = DepthGenerator.create(context);
-            DepthMetaData depthMD = depthGen.getMetaData();
+            DepthMetaData depthMD = depthGen.getMetaData();            
 
 			context.startGeneratingAll();
 			
@@ -153,20 +190,20 @@ class HandTracker extends Component {
             width = depthMD.getFullXRes();
             height = depthMD.getFullYRes();
             
-            System.out.println("Resolution: "+width+"x"+height);
+            System.out.println("Depth Resolution: "+width+"x"+height);
             
-            imgbytes = new byte[width*height];
+            imgbytes = new byte[width * height];
             
-            DataBufferByte dataBuffer = new DataBufferByte(imgbytes, width*height);
+            DataBufferByte dataBuffer = new DataBufferByte(imgbytes, width * height);
             Raster raster = Raster.createPackedRaster(dataBuffer, width, height, 8, null);
             bimg = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
             bimg.setData(raster);
 
         } catch (StatusException e){
-            System.out.println("Xbox Kinect not found! >> " + e.getMessage());
+            System.out.println("Xbox Kinect not found: " + e.getMessage());
             System.exit(1);
         } catch (GeneralException e) {
-            System.out.println("Error! >> " + e.getMessage());
+            System.out.println("Tracker Error: " + e.getMessage());
             System.exit(1);
         }
     }
@@ -222,16 +259,18 @@ class HandTracker extends Component {
                 imgbytes[pos] = (byte)histogram[pixel];
             }
         } catch (GeneralException e) {
-            e.printStackTrace();
+            System.out.println("Depth Update Error: "+e);
         }
     }
 
 
+    @Override
     public Dimension getPreferredSize() {
         return new Dimension(width, height);
     }
 
     Color colors[] = {Color.RED, Color.RED, Color.BLUE, Color.GREEN, Color.MAGENTA, Color.PINK, Color.YELLOW};
+    @Override
     public void paint(Graphics g) {
         DataBufferByte dataBuffer = new DataBufferByte(imgbytes, width*height);
         Raster raster = Raster.createPackedRaster(dataBuffer, width, height, 8, null); //TODO Test de tamaño de ventana!

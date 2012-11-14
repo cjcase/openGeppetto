@@ -117,13 +117,13 @@ public abstract class Listener implements Runnable{
 		return countersEnabled;
 	}
 	
-	public void setPort(int port) {
+	public final void setPort(int port) {
 		_isServer=true;
 		_port=port;
-		startThread();
+		//startThread();
 	}
 
-	public void setHostPort(String host, int port) {
+	public final void setHostPort(String host, int port) {
 		_isServer=false;
 		_host=host;
 		_port=port;

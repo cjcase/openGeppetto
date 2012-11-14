@@ -140,5 +140,8 @@ public class controlAdapter {
     public boolean isConnected(){
         return aiboMain._isConnected;
     }
-        
+     
+    public String getHost(){
+        return host;
+    }
 }
