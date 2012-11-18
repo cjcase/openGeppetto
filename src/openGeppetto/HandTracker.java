@@ -1,5 +1,7 @@
 package openGeppetto;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.OpenNI.*;
 
 import java.nio.ShortBuffer;
@@ -11,130 +13,9 @@ import java.awt.image.*;
 //Code by cjcase based on OpenNI examples
 public class HandTracker extends Component {
     
-    public controlAdapter bot;
+    private NUI nui;
     
-    //TODO test
-    String[] gestures;
-    float kinectX = 0f;
-    float kinectY = 0f;
-    float kinectZ = 0f;
-    float initZ = 0f;
-
-    //Callback class for "Gesture Recognized" event
-	class MyGestureRecognized implements IObserver<GestureRecognizedEventArgs>
-	{
-
-		@Override
-		public void update(IObservable<GestureRecognizedEventArgs> observable,
-				GestureRecognizedEventArgs args)
-		{
-			try
-			{
-				handsGen.StartTracking(args.getEndPosition());
-				System.out.println("Recognized: " + args.getGesture());
-                if(args.getGesture().equals("Wave")){
-                   initZ = args.getIdPosition().getZ();
-                   System.out.println("init Z: " + initZ);
-                } else if(args.getGesture().equals("Click")){
-                    bot.toggleStop();
-                }
-                
-			} catch (StatusException e)
-			{
-				System.out.println("Gesture Recognition Error: "+e);
-			}
-		}
-	}
-	class MyHandCreateEvent implements IObserver<ActiveHandEventArgs>
-	{
-        @Override
-		public void update(IObservable<ActiveHandEventArgs> observable,
-				ActiveHandEventArgs args)
-		{
-			ArrayList<Point3D> newList = new ArrayList<Point3D>();
-			newList.add(args.getPosition());
-			history.put(new Integer(args.getId()), newList);
-            System.out.println("New Hand Detected! (Id: " + args.getId() + ")");
-            initZ = args.getPosition().getZ();
-		}
-	}
-	class MyHandUpdateEvent implements IObserver<ActiveHandEventArgs>
-	{
-        @Override
-		public void update(IObservable<ActiveHandEventArgs> observable,
-				ActiveHandEventArgs args)
-		{
-			ArrayList<Point3D> historyList = history.get(args.getId());
-			
-            historyList.add(args.getPosition());
-            //System.out.println("[" + args.getPosition().getX() + ", " + args.getPosition().getY() + "]");
-            
-            //HeadControl TEST
-            if(bot.isConnected()){
-                
-                kinectX = args.getPosition().getX();
-                kinectY = args.getPosition().getY();
-                kinectZ = args.getPosition().getZ();
-                
-                //System.out.println("Z: " + (int)kinectZ);
-                
-                kinectX = (kinectX * 10000)/(width / 2);
-                kinectY = (kinectY * 10000)/(width / 2);
-                kinectZ = (kinectZ * 10000)/(initZ + 10000);
-                
-                if(kinectX > 10000) kinectX = 10000;
-                if(kinectX < -10000) kinectX = -10000;
-                if(kinectY > 10000) kinectY = 10000;
-                if(kinectY < -10000) kinectY = -10000;
-                if(kinectZ > 10000) kinectZ = 10000;
-                if(kinectZ < -10000) kinectZ = -10000;
-                
-                kinectX /= 10000;
-                kinectY /= 10000;
-                kinectZ /= 10000;
-                
-                bot.panHead(kinectX * -1);
-                bot.nodHead(kinectY);
-                
-                //bot.rotate(kinectX);
-                //bot.goFwd(kinectY);
-                               
-                //System.out.println("Z: " + kinectZ);
-            }
-            
-			while (historyList.size() > historySize)
-			{
-				historyList.remove(0);
-			}
-
-		}
-	}
-	private int historySize = 10;
-	class MyHandDestroyEvent implements IObserver<InactiveHandEventArgs>
-	{
-        @Override
-		public void update(IObservable<InactiveHandEventArgs> observable,
-				InactiveHandEventArgs args)
-		{
-			history.remove(args.getId());
-            System.out.println("Hand Lost! (Id: " + args.getId() + ")");
-			/*if (history.isEmpty())
-			{
-				try
-				{
-					gestureGen.addGesture("Click");
-				} catch (StatusException e)
-				{
-					e.printStackTrace();
-				}
-			}*/
-		}
-	}
-	
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 	//private OutArg<ScriptNode> scriptNode;
     private Context context;
     private DepthGenerator depthGen;
@@ -143,55 +24,63 @@ public class HandTracker extends Component {
     private HashMap<Integer, ArrayList<Point3D>> history;
     private byte[] imgbytes;
     private float histogram[];
-
+    private int historySize = 10;
+    Color colors[] = {Color.RED, Color.RED, Color.BLUE, Color.GREEN,
+        Color.MAGENTA, Color.PINK, Color.YELLOW};
+    
     private BufferedImage bimg;
     int width, height;
     
-    //private final String SAMPLE_XML_FILE = "config.xml";
-    public HandTracker()
-    {
-
+    //Constructor
+    public HandTracker(){
         try {
-            //scriptNode = new OutArg<ScriptNode>();
-            //context = Context.createFromXmlFile(SAMPLE_XML_FILE, scriptNode);
             context = new Context();
             context.setGlobalMirror(true);
             
-            gestureGen = GestureGenerator.create(context);
+            depthGen = DepthGenerator.create(context);
+            DepthMetaData depthMD = depthGen.getMetaData();
+            width = depthMD.getFullXRes();
+            height = depthMD.getFullYRes();
+
+            System.out.println("Depth Resolution: "+width+"x"+height);
             
-            //TODO gestures test
-            gestures = gestureGen.enumerateAllGestures();
+            nui = NUI.getInstance();
+            
+            
+            histogram = new float[10000];
+            
+            gestureGen = GestureGenerator.create(context);
+            String aGestures[] = gestureGen.enumerateAllGestures();
             System.out.print("Available Gestures: ");
-            for(int i = 0; i < gestures.length; i++){
-                if(i+1 == gestures.length){
-                    System.out.println(gestures[i]);
+            for(int i = 0; i < aGestures.length; i++){
+                if(i+1 == aGestures.length){
+                    System.out.println(aGestures[i]);
                 } else {
-                    System.out.print(gestures[i] + ", ");
+                    System.out.print(aGestures[i] + ", ");
                 }                
             }
-
-            gestureGen.addGesture("Click");
-            gestureGen.addGesture("Wave");
+            
+            String rGestures[] = nui.getGestures();
+            System.out.print("Recognizing Gestures: ");
+            for(int i = 0; i < rGestures.length; i++){
+                if(i+1 == rGestures.length){
+                    System.out.println(rGestures[i]);
+                } else {
+                    System.out.print(rGestures[i] + ", ");
+                }
+                gestureGen.addGesture(rGestures[i]);
+            }
+            
             gestureGen.getGestureRecognizedEvent().addObserver(new MyGestureRecognized());
             
             handsGen = HandsGenerator.create(context);
             handsGen.getHandCreateEvent().addObserver(new MyHandCreateEvent());
             handsGen.getHandUpdateEvent().addObserver(new MyHandUpdateEvent());
-            handsGen.getHandDestroyEvent().addObserver(new MyHandDestroyEvent());
-            
-            depthGen = DepthGenerator.create(context);
-            DepthMetaData depthMD = depthGen.getMetaData();            
+            handsGen.getHandDestroyEvent().addObserver(new MyHandDestroyEvent());         
 
 			context.startGeneratingAll();
 			
-            history = new HashMap<Integer, ArrayList<Point3D>>(); 
-            
-            histogram = new float[10000];
-            width = depthMD.getFullXRes();
-            height = depthMD.getFullYRes();
-            
-            System.out.println("Depth Resolution: "+width+"x"+height);
-            
+            history = new HashMap<Integer, ArrayList<Point3D>>();
             imgbytes = new byte[width * height];
             
             DataBufferByte dataBuffer = new DataBufferByte(imgbytes, width * height);
@@ -207,7 +96,77 @@ public class HandTracker extends Component {
             System.exit(1);
         }
     }
+
+    //Observer class for gesture recognition
+	class MyGestureRecognized implements IObserver<GestureRecognizedEventArgs>{
+
+		@Override
+		public void update(IObservable<GestureRecognizedEventArgs> observable,
+				GestureRecognizedEventArgs args){
+			try	{
+				handsGen.StartTracking(args.getEndPosition());
+				System.out.println("Recognized: " + args.getGesture());
+                
+                nui.gestureRecognized(args.getGesture());
+                
+			} catch (StatusException e)	{
+				System.out.println("Gesture Recognition Error: "+e);
+			} catch (Exception e) {
+                System.out.println("Gesture Recognition Error: " + e.getMessage());
+            }
+		}
+	}
     
+    //Observer class for new detected hands
+	class MyHandCreateEvent implements IObserver<ActiveHandEventArgs>{
+        @Override
+		public void update(IObservable<ActiveHandEventArgs> observable,
+				ActiveHandEventArgs args){
+			ArrayList<Point3D> newList = new ArrayList<Point3D>();
+			newList.add(args.getPosition());
+			history.put(new Integer(args.getId()), newList);
+            System.out.println("New Hand Detected! (Id: " + args.getId() + ")");
+            try {
+                nui.handCreated(args.getId());
+            } catch (Exception e) {
+                System.out.println("Hand Create Error: " + e.getMessage());
+            }
+		}
+	}
+    
+    //Observer class for hand movement
+	class MyHandUpdateEvent implements IObserver<ActiveHandEventArgs>{
+        @Override
+		public void update(IObservable<ActiveHandEventArgs> observable,
+				ActiveHandEventArgs args){
+			ArrayList<Point3D> historyList = history.get(args.getId());
+			
+            historyList.add(args.getPosition());
+            try {
+                nui.handMoved(args.getId(), args.getPosition());
+            } catch (Exception e) {
+                System.out.println("Hand Update Error: " + e.getMessage());
+            }            
+			while (historyList.size() > historySize){
+				historyList.remove(0);
+			}
+		}
+	}
+	
+	class MyHandDestroyEvent implements IObserver<InactiveHandEventArgs> {
+        @Override
+		public void update(IObservable<InactiveHandEventArgs> observable,
+				InactiveHandEventArgs args){
+			history.remove(args.getId());
+            System.out.println("Hand Lost! (Id: " + args.getId() + ")");
+            try {
+                nui.handLost(args.getId());
+            } catch (Exception e) {
+                System.out.println("Hand Destroy Error: " + e.getMessage());
+            }
+		}
+	}
+	
     private void calcHist(ShortBuffer depth){
         // reset
         for (int i = 0; i < histogram.length; ++i)
@@ -216,33 +175,27 @@ public class HandTracker extends Component {
         depth.rewind();
 
         int points = 0;
-        while(depth.remaining() > 0)
-        {
+        while(depth.remaining() > 0){
             short depthVal = depth.get();
-            if (depthVal != 0)
-            {
+            if (depthVal != 0){
                 histogram[depthVal]++;
                 points++;
             }
         }
         
-        for (int i = 1; i < histogram.length; i++)
-        {
+        for (int i = 1; i < histogram.length; i++){
             histogram[i] += histogram[i-1];
         }
 
-        if (points > 0)
-        {
-            for (int i = 1; i < histogram.length; i++)
-            {
+        if (points > 0){
+            for (int i = 1; i < histogram.length; i++){
                 histogram[i] = (int)(256 * (1.0f - (histogram[i] / (float)points)));
             }
         }
     }
 
 
-    void updateDepth()
-    {
+    void updateDepth(){
         try {
             DepthMetaData depthMD = depthGen.getMetaData();
 
@@ -252,8 +205,7 @@ public class HandTracker extends Component {
             calcHist(depth);
             depth.rewind();
             
-            while(depth.remaining() > 0)
-            {
+            while(depth.remaining() > 0){
                 int pos = depth.position();
                 short pixel = depth.get();
                 imgbytes[pos] = (byte)histogram[pixel];
@@ -269,11 +221,10 @@ public class HandTracker extends Component {
         return new Dimension(width, height);
     }
 
-    Color colors[] = {Color.RED, Color.RED, Color.BLUE, Color.GREEN, Color.MAGENTA, Color.PINK, Color.YELLOW};
     @Override
     public void paint(Graphics g) {
         DataBufferByte dataBuffer = new DataBufferByte(imgbytes, width*height);
-        Raster raster = Raster.createPackedRaster(dataBuffer, width, height, 8, null); //TODO Test de tamaño de ventana!
+        Raster raster = Raster.createPackedRaster(dataBuffer, width, height, 8, null);
         bimg.setData(raster);
 
         g.drawImage(bimg, 0, 0, null);

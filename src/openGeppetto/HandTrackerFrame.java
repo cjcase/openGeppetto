@@ -9,7 +9,6 @@ import java.awt.event.WindowEvent;
 //Code by cjcase based on OpenNI examples
 public class HandTrackerFrame implements Runnable{
     public HandTracker viewer;
-    public controlAdapter bot;
 	private boolean shouldRun = true;
 	private JFrame frame;
     
@@ -55,8 +54,6 @@ public class HandTrackerFrame implements Runnable{
 
     @Override
     public void run() {
-        viewer.bot = this.bot;
-        
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);

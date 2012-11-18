@@ -13,7 +13,8 @@ import java.awt.event.ActionListener;
 public class controlGUI extends javax.swing.JFrame implements ActionListener{
     
     //Global Variables
-    controlAdapter bot;
+    NUI nui;
+    aiboAdapter bot;
     Thread handThread;
     Thread botVisionThread;
     static int sliderMax = 10000;
@@ -23,7 +24,7 @@ public class controlGUI extends javax.swing.JFrame implements ActionListener{
     /** Creates new form controlGUI */
     public controlGUI() {
         initComponents();
-        this.setLocationRelativeTo(null);
+        this.setLocation(0, 0);
     }
 
     /** This method is called from within the constructor to
@@ -420,7 +421,11 @@ public class controlGUI extends javax.swing.JFrame implements ActionListener{
 private void connectBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectBtnActionPerformed
     //Start control through the adapter
     String ip = jTextField1.getText();
-    bot = new controlAdapter(bot.AIBO, ip);
+    
+    //Instance the NUI and attach the robot adapter
+    bot = new aiboAdapter(ip); //using AIBO
+    nui = NUI.getInstance();
+    nui.addBot(bot);
     
     stopBtn.setEnabled(true);
     showKinectBtn.setEnabled(true);
@@ -439,9 +444,8 @@ private void connectBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 private void showKinectBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showKinectBtnActionPerformed
     //Launch handtracking module
     if(bot.isConnected()){
-        HandTrackerFrame nui = new HandTrackerFrame();
-        nui.bot = this.bot;
-        handThread = new Thread(nui);    
+        HandTrackerFrame kinectFrame = new HandTrackerFrame();
+        handThread = new Thread(kinectFrame);    
         handThread.start();    
     }
 }//GEN-LAST:event_showKinectBtnActionPerformed
@@ -478,7 +482,7 @@ private void rollSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FI
         if(bot.isConnected()){
             fwdSlider.setValue(0);
             rotateSlider.setValue(0);
-            bot.goFwd(fwdSlider.getValue()/(float)sliderMax);
+            bot.forward(fwdSlider.getValue()/(float)sliderMax);
             bot.strafe(0.0); //Not used at the moment, but needed for smooth refresh movement
             bot.rotate(rotateSlider.getValue()/(float)sliderMax);
            
@@ -494,7 +498,7 @@ private void rollSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FI
     private void fwdSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_fwdSliderStateChanged
     //Walk forward
         if(bot.isConnected())
-            bot.goFwd(fwdSlider.getValue()/(float)sliderMax);
+            bot.forward(fwdSlider.getValue()/(float)sliderMax);
     }//GEN-LAST:event_fwdSliderStateChanged
 
     private void stopBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopBtnActionPerformed
@@ -516,6 +520,7 @@ private void rollSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FI
         //Start the head actions
         if(bot.isConnected())
             bot.startHead();
+            bot.tele = true;
             panSlider.setEnabled(true);
             rollSlider.setEnabled(true);
             centerBtn.setEnabled(true);
@@ -525,6 +530,7 @@ private void rollSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FI
         //Start the walk actions
         if(bot.isConnected())
             bot.startWalk();
+            bot.tele = false;
             fwdSlider.setEnabled(true);
             rotateSlider.setEnabled(true);
             estopBtn.setEnabled(true);
@@ -533,7 +539,7 @@ private void rollSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FI
     private void botViewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botViewBtnActionPerformed
         //Call viewAIBO and start fetching RAW vision
         if(bot.isConnected()){
-            bot.startRaw();
+            bot.startVision();
             VisionFrame test = new VisionFrame(bot.getHost());
             botVisionThread = new Thread(test);    
             botVisionThread.start();

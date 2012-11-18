@@ -54,7 +54,9 @@ public abstract class UDPListener extends Listener {
 						_socket.receive(incoming);
 						break;
 					} catch (SocketTimeoutException ex) { }
-					catch (SocketException ex) { Thread.sleep(500); }
+					catch (SocketException ex) { 
+                        try{ Thread.sleep(500); }catch(Exception e){}
+                    }
 				}
 				_socket.setSoTimeout(0); //set to be blocking again
 				System.out.println("["+_port+"] connected ...");
