@@ -52,6 +52,9 @@ public class stopAIBO  extends TCPListener{
     }
     
     public void toggle(){
+        try {
+            this.getStatus();
+        } catch (Exception ex) {}
         if(stopped){
             this.start();
         } else {
@@ -73,7 +76,6 @@ public class stopAIBO  extends TCPListener{
 			socketIn = sock.getInputStream();
 			fireConnected();
 			while (true) { //block until the socket is closed
-				this.getStatus(); //TODO: Diseñar el observador para el cambio de estado.
 				if(!_isConnected) break;
 			}
         } catch(SocketException e) {

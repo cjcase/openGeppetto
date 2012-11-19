@@ -20,9 +20,9 @@ public class walkAIBO extends TCPListener{
     OutputStream socketOut;
     
     //Walk directions
-    public static double fwd = 0.0;
-    public static double strafe = 0.0;
-	public static double rotate = 0.0;
+    public double fwd = 0.0;
+    public double strafe = 0.0;
+	public double rotate = 0.0;
     
     //Constructors
     public walkAIBO() { 

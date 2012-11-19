@@ -14,8 +14,9 @@ public class headAIBO extends TCPListener{
     OutputStream socketOut;
     
     //Head positions
-    public static double pan = 0.0;
-	public static double nod = 0.0;
+    public double pan = 0.0;
+	public double nod = 0.0;
+    public double tilt = 0.0;
     
     //Constructors
     public headAIBO() { 
@@ -39,6 +40,8 @@ public class headAIBO extends TCPListener{
 			pan = param;
 		else if(cmdbytes[0] == 'r')
 			nod = param;
+        else if(cmdbytes[0] == 't')
+            tilt = param;
 
     // Construct the command sequence
     byte sequence[] = new byte[5];
