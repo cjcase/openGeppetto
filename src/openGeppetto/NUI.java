@@ -45,7 +45,7 @@ public class NUI {
     }
     
     public void addBot(Adapter b){
-        if(bot.size() >= 1)
+        if(!multipleBots && bot.size() >= 1)
             multipleBots = true;
         this.bot.add(b);
     }
