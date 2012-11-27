@@ -61,7 +61,6 @@ public class controlGUI extends javax.swing.JFrame implements ActionListener{
         jLabel5 = new javax.swing.JLabel();
         walkBtn = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
-        jLabel6 = new javax.swing.JLabel();
         stopLbl = new javax.swing.JLabel();
         stopBtn = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
@@ -84,7 +83,7 @@ public class controlGUI extends javax.swing.JFrame implements ActionListener{
 
         jTextField1.setText("10.25.71.190");
 
-        jLabel7.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Tahoma", 1, 11));
         jLabel7.setText("Separate IPs with \";\"");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -197,11 +196,11 @@ public class controlGUI extends javax.swing.JFrame implements ActionListener{
                     .addComponent(panSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 128, Short.MAX_VALUE)
                         .addComponent(headBtn))
                     .addComponent(rollSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
-                    .addComponent(centerBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(centerBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -282,18 +281,17 @@ public class controlGUI extends javax.swing.JFrame implements ActionListener{
                         .addComponent(fwdSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(96, 96, 96))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(walkBtn)
                         .addGap(51, 51, 51))
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(estopBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(estopBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE)
                         .addGap(51, 51, 51))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
                             .addComponent(jLabel5)
                             .addComponent(rotateSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addContainerGap(80, Short.MAX_VALUE))))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -311,13 +309,10 @@ public class controlGUI extends javax.swing.JFrame implements ActionListener{
                 .addComponent(rotateSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(estopBtn)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Robot Status"));
-
-        jLabel6.setForeground(new java.awt.Color(255, 0, 0));
-        jLabel6.setText("Disconnected");
 
         stopLbl.setForeground(new java.awt.Color(255, 0, 0));
         stopLbl.setText("Blocked");
@@ -337,18 +332,16 @@ public class controlGUI extends javax.swing.JFrame implements ActionListener{
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel6)
-                    .addComponent(stopLbl)
-                    .addComponent(stopBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(stopBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
+                    .addComponent(stopLbl))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(stopLbl)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addComponent(stopBtn)
                 .addContainerGap())
         );
@@ -377,7 +370,7 @@ public class controlGUI extends javax.swing.JFrame implements ActionListener{
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(botViewBtn)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -385,34 +378,37 @@ public class controlGUI extends javax.swing.JFrame implements ActionListener{
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(12, 12, 12)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(6, 6, 6)
-                        .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(6, 6, 6)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(exitBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(12, 12, 12)
+                .addGap(14, 14, 14)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(9, 9, 9)
@@ -420,7 +416,7 @@ public class controlGUI extends javax.swing.JFrame implements ActionListener{
                             .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
                         .addComponent(exitBtn)))
                 .addContainerGap())
         );
@@ -432,7 +428,7 @@ private void connectBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     //Start control through the adapter
     String ips = jTextField1.getText();
     String ip[] = ips.split(";");
-    boolean many = false;
+    //boolean many = false;
     //if(ip.length > 1){ many = true;}
     //Instance the NUI and attach the robot adapters
     nui = NUI.getInstance();
@@ -472,13 +468,18 @@ private void showKinectBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN
 
 private void exitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitBtnActionPerformed
     //End all
+    for(int i = 0; i < numBots; i++){ 
+        if(bots.get(i).isConnected()){
+            bots.get(i).endAll();
+        } 
+    }
     System.exit(0);
 }//GEN-LAST:event_exitBtnActionPerformed
 
 private void centerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_centerBtnActionPerformed
     //Return head position to center
     for(int i = 0; i < numBots; i++){ 
-        if(!bots.get(i).isConnected()){
+        if(bots.get(i).isConnected()){
             panSlider.setValue(0);
             rollSlider.setValue(0);
             bots.get(i).panHead(panSlider.getValue()/(float)sliderMax);
@@ -490,7 +491,7 @@ private void centerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 private void panSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_panSliderStateChanged
     //Pan head with slider
     for(int i = 0; i < numBots; i++){ 
-        if(!bots.get(i).isConnected()){
+        if(bots.get(i).isConnected()){
             bots.get(i).panHead(panSlider.getValue()/(float)sliderMax);
         } 
     } 
@@ -499,7 +500,7 @@ private void panSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIR
 private void rollSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_rollSliderStateChanged
     //Nod head with slider
     for(int i = 0; i < numBots; i++){ 
-        if(!bots.get(i).isConnected()){
+        if(bots.get(i).isConnected()){
             bots.get(i).nodHead(rollSlider.getValue()/(float)sliderMax);
         } 
     } 
@@ -508,7 +509,7 @@ private void rollSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FI
     private void estopBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_estopBtnActionPerformed
         //Stop Walking!
         for(int i = 0; i < numBots; i++){ 
-            if(!bots.get(i).isConnected()){
+            if(bots.get(i).isConnected()){
                 fwdSlider.setValue(0);
                 rotateSlider.setValue(0);
                 bots.get(i).forward(fwdSlider.getValue()/(float)sliderMax);
@@ -521,7 +522,7 @@ private void rollSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FI
     private void rotateSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_rotateSliderStateChanged
     //Rotate walk
         for(int i = 0; i < numBots; i++){ 
-            if(!bots.get(i).isConnected()){
+            if(bots.get(i).isConnected()){
                 bots.get(i).rotate(rotateSlider.getValue()/(float)sliderMax);
             } 
         } 
@@ -530,8 +531,8 @@ private void rollSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FI
     private void fwdSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_fwdSliderStateChanged
     //Walk forward
         for(int i = 0; i < numBots; i++){ 
-            if(!bots.get(i).isConnected()){
-                bots.get(i).forward(rotateSlider.getValue()/(float)sliderMax);
+            if(bots.get(i).isConnected()){
+                bots.get(i).forward(fwdSlider.getValue()/(float)sliderMax);
             } 
         }
     }//GEN-LAST:event_fwdSliderStateChanged
@@ -539,28 +540,28 @@ private void rollSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FI
     private void stopBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopBtnActionPerformed
         //Toggle stop on robot
         for(int i = 0; i < numBots; i++){ 
-            if(!bots.get(i).isConnected()){
+            if(bots.get(i).isConnected()){
                 if(!bots.get(i).getStopped()){
-            bots.get(i).stop();
-            stopLbl.setText("Blocked");
-            stopBtn.setText("Blocked");
-            stopLbl.setForeground(Color.red);
-        } else {
-            bots.get(i).start();
-            stopLbl.setText("Unblocked");
-            stopBtn.setText("Unblocked");
-            stopLbl.setForeground(Color.green);
-        }
+                    bots.get(i).stop();
+                    stopLbl.setText("Blocked");
+                    stopBtn.setText("Blocked");
+                    stopLbl.setForeground(Color.red);
+                } else {
+                    bots.get(i).start();
+                    stopLbl.setText("Unblocked");
+                    stopBtn.setText("Unblocked");
+                    stopLbl.setForeground(Color.green);
+                }
             } 
         }
     }//GEN-LAST:event_stopBtnActionPerformed
 
     private void headBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_headBtnActionPerformed
         //Start the head actions
-        for(int i = 0; i < numBots; i++){ 
-            if(!bots.get(i).isConnected()){
-                bots.get(i).startHead();
-            } 
+        for(int i = 0; i < numBots; i++){
+            if(bots.get(i).isConnected()){
+                bots.get(i).startHead(); 
+            }
         } 
         panSlider.setEnabled(true);
         rollSlider.setEnabled(true);
@@ -570,7 +571,7 @@ private void rollSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FI
     private void walkBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_walkBtnActionPerformed
         //Start the walk actions
         for(int i = 0; i < numBots; i++){ 
-            if(!bots.get(i).isConnected()){
+            if(bots.get(i).isConnected()){
                 bots.get(i).startWalk();
             } 
         } 
@@ -582,7 +583,7 @@ private void rollSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FI
     private void botViewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botViewBtnActionPerformed
         //Call viewAIBO and start fetching RAW vision
         for(int i = 0; i < numBots; i++){ 
-            if(!bots.get(i).isConnected()){
+            if(bots.get(i).isConnected()){
                 bots.get(i).startVision();
                 VisionFrame test = new VisionFrame(bots.get(i).getHost());
                 Thread aux = new Thread(test);    
@@ -635,7 +636,6 @@ private void rollSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FI
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;

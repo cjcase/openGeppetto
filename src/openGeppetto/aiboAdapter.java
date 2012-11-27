@@ -130,4 +130,19 @@ public class aiboAdapter implements Adapter{
     public String getHost(){
         return host;
     }
+    
+    public void endAll(){
+        try{
+            if(aiboHead._isConnected)
+                aiboHead.kill();
+            if(aiboWalk._isConnected)
+                aiboWalk.kill();
+            if(aiboStop._isConnected)
+                aiboStop.kill();
+            if(aiboMain._isConnected)
+                aiboMain.kill();        
+        }catch(Exception e){
+            System.out.println("Warning: Tried to end unexistant connection");
+        }
+    }
 }

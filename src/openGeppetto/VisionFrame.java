@@ -53,7 +53,7 @@ public class VisionFrame extends JPanel implements VisionUpdatedListener, Runnab
     
     @Override
 	public void run(){
-		frame = new JFrame("Robot RAW Vision");
+		frame = new JFrame("Robot @"+ this.host +" RAW Vision");
 		frame.setBackground(Color.black);
 		frame.setSize(new Dimension(VisionListener.DEFAULT_WIDTH*2, VisionListener.DEFAULT_HEIGHT*2)); 
 		frame.getContentPane().add(this);

@@ -1,7 +1,5 @@
 package openGeppetto;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.OpenNI.*;
 
 import java.nio.ShortBuffer;
@@ -25,8 +23,7 @@ public class HandTracker extends Component {
     private byte[] imgbytes;
     private float histogram[];
     private int historySize = 10;
-    Color colors[] = {Color.RED, Color.RED, Color.BLUE, Color.GREEN,
-        Color.MAGENTA, Color.PINK, Color.YELLOW};
+    Color colors[] = {Color.ORANGE, Color.BLUE, Color.GREEN,  Color.MAGENTA, Color.PINK, Color.CYAN};
     
     private BufferedImage bimg;
     int width, height;
@@ -44,8 +41,10 @@ public class HandTracker extends Component {
 
             System.out.println("Depth Resolution: "+width+"x"+height);
             
+            //Get the NUI Instance and set changes
             nui = NUI.getInstance();
-            
+            nui.setHeight(height);
+            nui.setWidth(width);
             
             histogram = new float[10000];
             
@@ -229,8 +228,20 @@ public class HandTracker extends Component {
 
         g.drawImage(bimg, 0, 0, null);
         
-        g.setColor(Color.RED);
-        //g.drawLine(width / 2, height, width / 2, height * -1);
+        if(nui.getNeo()){
+            //TODO Add this to framework with design not hacks!
+            g.setColor(Color.RED);
+            g.drawLine(width / 2, height, width / 2, height * -1);
+            g.drawString("Head Area", (width / 2)+1, height-1);
+            g.drawString("Walk Area", (width / 2)-(width / 2)+1, height-1);
+            int x1, y1, x2, y2;
+            x1 = (width / 2)/2;
+            y1 = (height / 2);
+            x2 = (width / 2)+(width / 4);
+            y2 = (height / 2);
+            g.drawRoundRect(x1, y1, 5, 5, 0, 360); //Walk center
+            g.drawRoundRect(x2, y2, 5, 5, 0, 360); //Head center
+        }
 
         for (Integer id : history.keySet())
         {

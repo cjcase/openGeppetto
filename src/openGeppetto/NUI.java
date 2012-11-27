@@ -21,6 +21,9 @@ public class NUI {
     private ArrayList<String> gestures;
     private HashMap<Integer, String> hands;
     private boolean multipleBots;
+    //private float kinectX;
+    //private float kinectY;
+    private boolean neo;
     
     public static NUI getInstance(){
         if (instance == null){
@@ -42,6 +45,7 @@ public class NUI {
         multipleBots = false;
         gestures.add("Wave");
         gestures.add("Click");
+        neo = true;
     }
     
     public void addBot(Adapter b){
@@ -113,16 +117,45 @@ public class NUI {
         if(!hands.containsKey(id))
             return;
         
-        float kinectX = this.processPoint(point.getX());
-        float kinectY = this.processPoint(point.getY());
+        float kinectX = point.getX();
+        float kinectY = point.getY();
         
+        //Point processing to buffer movement
+        //using new NUI
+        //int xWalk, yWalk, xHead, yHead;
+        //xWalk = (width / 2)/2;
+        //yWalk = (height / 2);
+        //xHead = (width / 2)+(width / 4);
+        //yHead = (height / 2);
+        
+        kinectY = (kinectY * 10000)/(height / 2);
+        if(kinectY > 10000) kinectY = 10000;
+        if(kinectY < -10000) kinectY = -10000;
+        kinectY /= 10000;
+        
+        
+        kinectX = (kinectX * 10000)/(width / 2);
+        if(kinectX > 10000) kinectX = 10000;
+        if(kinectX < -10000) kinectX = -10000;
+        kinectX /= 10000;
+        
+                
         if(!multipleBots){
             aiboAdapter auxBot = (aiboAdapter) bot.get(0); //Avoid getting from the list every call
             if(auxBot.isConnected()){
-                if(hands.get(id).equals("Head")){
+                if(hands.get(id).equals("Head")){                     
+                    if(neo){
+                        
+                        //if(kinectX < 0) kinectX = 0;        
+                                                
+                        //kinectX = (float) (2 * kinectX - (Math.floor(kinectX)-1));
+                        
+                        //TODO Debug
+                        System.out.println("X: "+kinectX);
+                    }
                     auxBot.panHead(kinectX * -1);
                     auxBot.nodHead(kinectY);
-                } else if(hands.get(id).equals("Walk")){                
+                } else if(hands.get(id).equals("Walk")){
                     auxBot.rotate(kinectX);
                     auxBot.forward(kinectY);
                 }
@@ -131,8 +164,13 @@ public class NUI {
             int nBots = bot.size();
             for(int i = 0; i < nBots; i++){
                 if(((aiboAdapter)bot.get(i)).isConnected()){
-                    bot.get(i).panHead(kinectX * -1);
-                    bot.get(i).nodHead(kinectY);
+                    if(hands.get(id).equals("Head")){
+                        bot.get(i).panHead(kinectX * -1);
+                        bot.get(i).nodHead(kinectY);
+                    } else if(hands.get(id).equals("Walk")){
+                        bot.get(i).rotate(kinectX);
+                        bot.get(i).forward(kinectY);
+                    }
                 }
             }
         }
@@ -161,5 +199,22 @@ public class NUI {
         for(int i = 0; i < nBots; i++){
             bot.get(i).toggleStop();
         }
-    }    
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public boolean getNeo() {
+        return neo;
+    }
+
+    public void setNeo(boolean neo) {
+        this.neo = neo;
+    }
+    
 }

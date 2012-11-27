@@ -39,22 +39,22 @@ public abstract class TCPListener extends Listener{
 		Thread me = Thread.currentThread();
 		while (me==_listenerThread && !destroy) {
 			if(attempts==0) {
-				System.out.println("["+_port+"] connecting ...");
+				System.out.println("["+_host+":"+_port+"] connecting ...");
 			}
 			try {
 				_socket=new Socket(_host,_port);
-				System.out.println("["+_port+"] connected");
+				System.out.println("["+_host+":"+_port+"] connected");
 				attempts=0;
 				_isConnected=true;
 			} catch (Exception ex) {}
 			if(_isConnected) {
 				connected(_socket);
 				if(!destroy)
-					System.out.println("["+_port+"] disconnected, attempting to reestablish ..");
+					System.out.println("["+_host+":"+_port+"] disconnected, attempting to reestablish ..");
 			}
 			attempts++;
 			if(destroy) {
-				System.out.println("["+_port+"] connection closed");
+				System.out.println("["+_host+":"+_port+"] connection closed");
 				break;
 			}
 			try {
